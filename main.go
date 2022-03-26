@@ -25,13 +25,14 @@ func main() {
 		log.Fatalf("could not create page: %v", err)
 	}
 	// Go to web
-	if _, err := page.Goto("http://example.com", playwright.PageGotoOptions{
+	if _, err := page.Goto("<URL>", playwright.PageGotoOptions{
 		WaitUntil: playwright.WaitUntilStateNetworkidle,
 	}); err != nil {
 		log.Fatalf("could not goto: %v", err)
 	}
 
 	// LOGIN PAGE
+	fmt.Println("LOGIN PAGE")
 	// Obtain login frame
 	el, err := page.WaitForSelector("html > frameset > frame:nth-child(2)")
 	if err != nil {
@@ -42,11 +43,12 @@ func main() {
 		log.Fatalf("Element is not a frame: %s", err)
 	}
 	// Login: user > psswd > accept
+	fmt.Println("Signing in...")
 	err = frame.Click("#txtusuario")
 	if err != nil {
 		log.Fatalf("could not click: %s", err.Error())
 	}
-	err = frame.Type("#txtusuario", "<YOUR USER>")
+	err = frame.Type("#txtusuario", "<USER>")
 	if err != nil {
 		log.Fatalf("could not type: %s", err.Error())
 	}
@@ -54,7 +56,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not click: %s", err.Error())
 	}
-	err = frame.Type("#txtContraseña", "<YOUR PASSWORD>")
+	err = frame.Type("#txtContraseña", "<PASSWORD>")
 	if err != nil {
 		log.Fatalf("could not type: %s", err.Error())
 	}
@@ -64,10 +66,26 @@ func main() {
 	}
 
 	// HOME PAGE
+	fmt.Println("HOME PAGE")
 	// Go to machines state
+	fmt.Println("Click on machines state button...")
 	frame.Click("#lblMenu > ul > li:nth-child(5) > a")
 
+	// MACHINES STATE
+	fmt.Println("MACHINES STATE")
 	frame.WaitForSelector("#form1")
-	txt, _ := frame.Content()
-	fmt.Println(txt)
+	//frame.locator(".pdm-display2")
+	fmt.Println("Getting machines...")
+	entries, err := frame.QuerySelectorAll(".pmd-display2")
+	if err != nil {
+		log.Fatalf("could not get entries: %v", err)
+	}
+	for i, entry := range entries {
+		entryText, err := entry.TextContent()
+		if err != nil {
+			log.Fatalf("could not get text content: %v", err)
+		}
+		fmt.Printf("Machine %d: %s\n", i, entryText)
+	}
+	//txt, _ := frame.Content()
 }
