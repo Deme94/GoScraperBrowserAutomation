@@ -74,7 +74,6 @@ func main() {
 	// MACHINES STATE
 	fmt.Println("MACHINES STATE")
 	frame.WaitForSelector("#form1")
-	//frame.locator(".pdm-display2")
 	fmt.Println("Getting machines...")
 	entries, err := frame.QuerySelectorAll(".pmd-display2")
 	if err != nil {
